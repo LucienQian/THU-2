@@ -1,17 +1,18 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using TMPro;
+using System.Collections;
 
 namespace LUCIEN
 {
     /// <summary>
-    /// ¹ï¸Ü¨t²Î
+    /// å°è©±ç³»çµ±
     /// </summary>
     public class DialogueSystem : MonoBehaviour
     {
-        #region ¸ê®Æ°Ï°ì
-        [SerializeField, Header("¹ï¸Ü¶¡¹j"), Range(0, 0.5f)]
+        #region è³‡æ–™å€åŸŸ
+        [SerializeField, Header("å°è©±é–“éš”"), Range(0, 0.5f)]
         private float dialogueIntervalTime = 0.1f;
-        [SerializeField, Header("¶}ÀY¹ï¸Ü")]
+        [SerializeField, Header("é–‹é ­å°è©±")]
         private DialogueData DialogueOpening;
 
         private WaitForSeconds dialogueInterval => new WaitForSeconds(dialogueIntervalTime);
@@ -22,16 +23,48 @@ namespace LUCIEN
         private GameObject gotriangle; 
         #endregion
 
-        #region ¨Æ¥ó
+        #region äº‹ä»¶
         private void Awake()
         {
 
-            groupDialogue = GameObject.Find("µe¥¬¹ï¸Ü¨t²Î").GetComponent<CanvasGroup>();
-            textName = GameObject.Find("¹ï¸ÜªÌ¦WºÙ").GetComponent<TextMeshProUGUI>();
-            textContent = GameObject.Find("¹ï¸Ü¤º®e").GetComponent<TextMeshProUGUI>();
-            gotriangle = GameObject.Find("¹ï¸Ü§¹¦¨¹Ï¥Ü");
+            groupDialogue = GameObject.Find("ç•«å¸ƒå°è©±ç³»çµ±").GetComponent<CanvasGroup>();
+            textName = GameObject.Find("å°è©±è€…åç¨±").GetComponent<TextMeshProUGUI>();
+            textContent = GameObject.Find("å°è©±å…§å®¹").GetComponent<TextMeshProUGUI>();
+            gotriangle = GameObject.Find("å°è©±å®Œæˆåœ–ç¤º");
             gotriangle.SetActive(false);
+
+            StartCoroutine(FadeGroup());
+            StartCoroutine(TypeEffect());
         } 
         #endregion
+
+        /// <summary>
+        /// æ·¡å…¥æ·¡å‡ºç¾¤çµ„ç‰©ä»¶
+        /// </summary> 
+        private IEnumerator FadeGroup()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                groupDialogue.alpha += 0.1f;
+                yield return new WaitForSeconds(0.04f);
+            }
+        }
+
+        private IEnumerator TypeEffect()
+        {
+            textName.text = DialogueOpening.dialogueName;
+            textContent.text = "";
+
+            string dialogue = DialogueOpening.dialogueContents[1];
+
+            for (int i = 0; i < dialogue.Length; i++)
+            {
+                textContent.text += dialogue[i];
+                yield return dialogueInterval;
+            }
+            gotriangle.SetActive(true);
+            
+            
+        }
     }
 }
